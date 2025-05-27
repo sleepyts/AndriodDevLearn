@@ -63,7 +63,15 @@ fun PlaylistScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             LazyColumn {
+                item {
+                    PlaylistProfile(playlist)
+                    Spacer(Modifier.height(24.dp))
 
+                }
+                items(uiState.value.songs.size) { index ->
+                    val song = uiState.value.songs[index]
+                    SongItem(song)
+                }
             }
 
         }
@@ -124,7 +132,7 @@ fun PlaylistTooBar(
 }
 
 @Composable
-fun SongCard(
+fun SongItem(
     song: Song
 ) {
     Row(
@@ -174,7 +182,7 @@ fun SongCard(
 @Preview
 @Composable
 fun SongsPreview() {
-    SongCard(
+    SongItem(
 
         Song(
             "Hello",
