@@ -35,20 +35,22 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.myapplicationtest1.model.resp.Al
 import com.example.myapplicationtest1.model.resp.Ar
+import com.example.myapplicationtest1.model.resp.Playlist
 import com.example.myapplicationtest1.model.resp.Song
 import com.example.myapplicationtest1.ui.navigation.LocalNavController
 
 @Composable
 fun PlaylistScreen(
-    playlistId: String,
     navController: NavController,
     viewModel: PlaylistViewModel = hiltViewModel(),
     modify: Modifier = Modifier
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
+    val playlist =
+        navController.previousBackStackEntry?.savedStateHandle?.get<Playlist>("current_playlist")!!
     LaunchedEffect(true) {
-        viewModel.getSongs(playlistId)
+        viewModel.getSongs(playlist.id)
     }
 
     Scaffold(
@@ -102,7 +104,8 @@ fun SongList(
                     AsyncImage(
                         model = it.al.picUrl,
                         contentDescription = null,
-                        Modifier.size(48.dp)
+                        Modifier
+                            .size(48.dp)
                             .clip(RoundedCornerShape(6.dp))
 
                     )

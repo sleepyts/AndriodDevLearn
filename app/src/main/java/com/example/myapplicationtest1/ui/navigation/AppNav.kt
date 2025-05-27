@@ -27,10 +27,8 @@ fun AppNav(navController: NavHostController) {
             composable(Routes.HOME) {
                 HomeScreen(navController)
             }
-            composable("${Routes.PLAYLIST}/{playlist}") { backStackEntry ->
-                backStackEntry.arguments?.getString("playlist")?.let {
-                    PlaylistScreen(it, navController)
-                } ?: Text(text = "No playlist")
+            composable("${Routes.PLAYLIST}/{playlist}") {
+                PlaylistScreen(navController)
             }
         }
     }

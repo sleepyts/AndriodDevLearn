@@ -1,6 +1,7 @@
 package com.example.myapplicationtest1.ui.home
 
 
+import android.R.attr.data
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -109,6 +110,7 @@ fun PlayList(
                         .fillMaxWidth()
                         .height(50.dp)
                         .clickable(onClick = {
+                            navController.currentBackStackEntry?.savedStateHandle?.set("current_playlist", it)
                             navController.navigate("${Routes.PLAYLIST}/${it.id}")
                         }),
                     horizontalArrangement = Arrangement.Start,
