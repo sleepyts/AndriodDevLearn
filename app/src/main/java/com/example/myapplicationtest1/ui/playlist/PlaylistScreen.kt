@@ -62,10 +62,48 @@ fun PlaylistScreen(
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            SongList(songs = uiState.value.songs)
+            LazyColumn {
+
+            }
+
         }
     }
 
+}
+
+@Composable
+fun PlaylistProfile(
+    playlist: Playlist
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .height(120.dp),
+        horizontalArrangement = Arrangement.Start,
+    ) {
+        AsyncImage(
+            model = playlist.coverImgUrl,
+            contentDescription = null,
+            Modifier
+                .size(120.dp)
+                .clip(RoundedCornerShape(6.dp))
+        )
+        Spacer(Modifier.width(12.dp))
+        Column(
+            Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Text(
+                text = playlist.name,
+                style = MaterialTheme.typography.titleLarge,
+            )
+            Text(
+                text = String.format("by - %s      %d次播放", "Missday", playlist.playCount),
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,84 +124,75 @@ fun PlaylistTooBar(
 }
 
 @Composable
-fun SongList(
-    songs: List<Song>,
+fun SongCard(
+    song: Song
 ) {
-    LazyColumn(
-        Modifier.padding(12.dp)
-    ) {
-        songs.forEach { it ->
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                    horizontalArrangement = Arrangement.Start,
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp),
+        horizontalArrangement = Arrangement.Start,
 
-                    ) {
-                    AsyncImage(
-                        model = it.al.picUrl,
-                        contentDescription = null,
-                        Modifier
-                            .size(48.dp)
-                            .clip(RoundedCornerShape(6.dp))
+        ) {
+        AsyncImage(
+            model = song.al.picUrl,
+            contentDescription = null,
+            Modifier
+                .size(48.dp)
+                .clip(RoundedCornerShape(6.dp))
 
-                    )
-                    Spacer(Modifier.width(12.dp))
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight(),
-                        verticalArrangement = Arrangement.SpaceAround,
+        )
+        Spacer(Modifier.width(12.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.SpaceAround,
 
-                        ) {
-                        Text(
-                            text = it.name,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Text(
-                            text = String.format(
-                                "%s - %s",
-                                it.ar.joinToString("/") { it.name },
-                                it.al.name
-                            ),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.bodySmall
-                        )
+            ) {
+            Text(
+                text = song.name,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = String.format(
+                    "%s - %s",
+                    song.ar.joinToString("/") { it.name },
+                    song.al.name
+                ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodySmall
+            )
 
-                    }
-                }
-                Spacer(Modifier.height(12.dp))
-
-            }
         }
     }
+    Spacer(Modifier.height(12.dp))
 }
 
 
 @Preview
 @Composable
 fun SongsPreview() {
-    SongList(
-        listOf(
-            Song(
-                "Hello",
+    SongCard(
+
+        Song(
+            "Hello",
+            "123",
+            listOf(
+                Ar(
+                    "12312",
+                    "123123"
+                )
+            ),
+            Al(
                 "123",
-                listOf(
-                    Ar(
-                        "12312",
-                        "123123"
-                    )
-                ),
-                Al(
-                    "123",
-                    "wqe",
-                    "https://p1.music.126.net/2BSOJnjjI2fOJgkrqEoClg==/109951164136313679.jpg"
-                ),
-                "123",
-                "123213"
-            )
+                "wqe",
+                "https://p1.music.126.net/2BSOJnjjI2fOJgkrqEoClg==/109951164136313679.jpg"
+            ),
+            "123",
+            "123213"
         )
+
     )
 }
