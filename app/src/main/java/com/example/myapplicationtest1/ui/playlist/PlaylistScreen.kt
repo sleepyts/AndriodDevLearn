@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,10 +26,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.myapplicationtest1.model.resp.Al
+import com.example.myapplicationtest1.model.resp.Ar
 import com.example.myapplicationtest1.model.resp.Song
 import com.example.myapplicationtest1.ui.navigation.LocalNavController
 
@@ -132,4 +133,31 @@ fun SongList(
             }
         }
     }
+}
+
+
+@Preview
+@Composable
+fun SongsPreview() {
+    SongList(
+        listOf(
+            Song(
+                "Hello",
+                "123",
+                listOf(
+                    Ar(
+                        "12312",
+                        "123123"
+                    )
+                ),
+                Al(
+                    "123",
+                    "wqe",
+                    "https://p1.music.126.net/2BSOJnjjI2fOJgkrqEoClg==/109951164136313679.jpg"
+                ),
+                "123",
+                "123213"
+            )
+        )
+    )
 }
