@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id ("kotlin-parcelize")
+
     id("com.google.dagger.hilt.android") // ✅ 添加这一行
     kotlin("kapt") // ✅ 添加 kapt 支持
 }
