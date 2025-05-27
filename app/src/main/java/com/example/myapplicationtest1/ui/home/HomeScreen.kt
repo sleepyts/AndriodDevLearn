@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
@@ -116,7 +117,10 @@ fun PlayList(
                     AsyncImage(
                         model = it.coverImgUrl,
                         contentDescription = null,
-                        Modifier.size(48.dp)
+                        Modifier
+                            .size(48.dp)
+                            .clip(RoundedCornerShape(6.dp))
+
 
                     )
                     Spacer(Modifier.width(12.dp))
