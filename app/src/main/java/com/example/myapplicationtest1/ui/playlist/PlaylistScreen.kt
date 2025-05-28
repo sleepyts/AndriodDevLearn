@@ -1,5 +1,6 @@
 package com.example.myapplicationtest1.ui.playlist
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,6 +39,7 @@ import com.example.myapplicationtest1.model.resp.Ar
 import com.example.myapplicationtest1.model.resp.Playlist
 import com.example.myapplicationtest1.model.resp.Song
 import com.example.myapplicationtest1.ui.navigation.LocalNavController
+import com.example.myapplicationtest1.ui.navigation.Routes
 
 @Composable
 fun PlaylistScreen(
@@ -134,11 +136,17 @@ fun PlaylistTooBar(
 @Composable
 fun SongItem(
     song: Song
+
 ) {
+    val navController = LocalNavController.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp),
+            .height(50.dp)
+            .clickable(onClick = {
+                navController.currentBackStackEntry?.savedStateHandle?.set("song", song)
+                navController.navigate(Routes.PLAYER)
+            }),
         horizontalArrangement = Arrangement.Start,
 
         ) {

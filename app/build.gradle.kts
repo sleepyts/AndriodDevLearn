@@ -65,7 +65,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("androidx.compose.material3:material3:1.1.0")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.0") // 注意不要有空格和 - 写法错误！
-
+    implementation ("com.google.android.exoplayer:exoplayer:2.19.0")
 
     // 测试
     testImplementation(libs.junit)

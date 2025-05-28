@@ -18,7 +18,7 @@ object NetWorkModule {
     @Named("BaseRetrofit")
     fun provideBaseRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://b28f-2001-da8-3001-1020-2-b0cb-95d3-3e38.ngrok-free.app")
+            .baseUrl("https://8268-2001-da8-3001-1020-2-b0cb-95d3-3e38.ngrok-free.app")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -31,6 +31,11 @@ object NetWorkModule {
     @Provides
     fun providePlaylistApiService(@Named("BaseRetrofit") retrofit: Retrofit): PlaylistApiService {
         return retrofit.create(PlaylistApiService::class.java)
+    }
+
+    @Provides
+    fun provideSongApiService(@Named("BaseRetrofit") retrofit: Retrofit): SongApiService {
+        return retrofit.create(SongApiService::class.java)
     }
 
 }

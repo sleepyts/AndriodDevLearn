@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.myapplicationtest1.ui.home.HomeScreen
+import com.example.myapplicationtest1.ui.player.PlayerScreen
 import com.example.myapplicationtest1.ui.playlist.PlaylistScreen
 import com.example.myapplicationtest1.ui.playlist.PlaylistViewModel
 
@@ -30,6 +31,10 @@ fun AppNav(navController: NavHostController) {
             composable("${Routes.PLAYLIST}/{playlist}") {
                 PlaylistScreen(navController)
             }
+            composable(Routes.PLAYER) {
+                PlayerScreen()
+            }
+
         }
     }
 
