@@ -74,6 +74,10 @@ fun HomeScreen(
 
     var drawerState = rememberDrawerState(DrawerValue.Closed)
 
+    LaunchedEffect(true) {
+        viewModel.fetchUserDetail("430820620")
+        viewModel.fetchUserPlaylist("430820620")
+    }
     var scope = rememberCoroutineScope()
     ModalNavigationDrawer(
         drawerState = drawerState,
