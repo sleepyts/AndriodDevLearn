@@ -4,6 +4,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
+import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Named
@@ -14,11 +16,23 @@ import kotlin.jvm.java
 @InstallIn(SingletonComponent::class)
 object NetWorkModule {
 
+
+    class LoggingInterceptor : Interceptor {
+        override fun intercept(chain: Interceptor.Chain): Response {
+            val request = chain.request()
+            println("Sending request: ${request.url} - ${request.headers}")
+            val response = chain.proceed(request)
+            println("Received response for: ${response.request.url} - ${response.code}")
+            return response
+        }
+    }
+
     @Provides
     @Named("BaseRetrofit")
     fun provideBaseRetrofit(): Retrofit {
+
         return Retrofit.Builder()
-            .baseUrl("https://8268-2001-da8-3001-1020-2-b0cb-95d3-3e38.ngrok-free.app")
+            .baseUrl("http://10.0.2.2:3000")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

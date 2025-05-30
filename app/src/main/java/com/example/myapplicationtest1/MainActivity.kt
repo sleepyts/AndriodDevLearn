@@ -1,6 +1,7 @@
 package com.example.myapplicationtest1
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -29,6 +30,7 @@ class MainActivity : ComponentActivity() {
 
             }
         }
+
     }
 }
 
