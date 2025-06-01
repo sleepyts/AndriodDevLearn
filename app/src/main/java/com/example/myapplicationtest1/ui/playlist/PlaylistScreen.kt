@@ -137,8 +137,8 @@ fun PlaylistTooBar(
 
 @Composable
 fun SongItem(
-    song: Song
-
+    song: Song,
+    viewModel: PlaylistViewModel = hiltViewModel(),
 ) {
     val navController = LocalNavController.current
     Row(
@@ -146,7 +146,7 @@ fun SongItem(
             .fillMaxWidth()
             .height(50.dp)
             .clickable(onClick = {
-                navController.currentBackStackEntry?.savedStateHandle?.set("song", song)
+                viewModel.updateCurrentSong(song)
                 navController.navigate(Routes.PLAYER)
             }),
         horizontalArrangement = Arrangement.Start,

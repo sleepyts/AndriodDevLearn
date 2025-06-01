@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplicationtest1.PlayerManager
 import com.example.myapplicationtest1.PlayerState
+import com.example.myapplicationtest1.model.resp.Song
 import com.example.myapplicationtest1.network.SongApiService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,9 +27,9 @@ class PlayerViewModel @Inject constructor(
         Log.d(TAG, "onCleared")
     }
 
-    fun getUrlAndPlay(id: String) {
+    fun play() {
         viewModelScope.launch {
-            playerManager.getSongUrlAndPlay(id)
+            playerManager.play()
         }
     }
 

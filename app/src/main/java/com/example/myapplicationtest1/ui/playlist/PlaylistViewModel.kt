@@ -46,6 +46,10 @@ class PlaylistViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(songs = songs)
     }
 
+    fun updateCurrentSong(song: Song) {
+        playerManager.updateCurrentSong(song)
+    }
+
 
 }
 

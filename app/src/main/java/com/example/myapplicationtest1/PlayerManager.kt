@@ -2,14 +2,12 @@ package com.example.myapplicationtest1
 
 import android.media.MediaPlayer
 import android.util.Log
-import androidx.lifecycle.viewModelScope
 import com.example.myapplicationtest1.model.resp.Song
 import com.example.myapplicationtest1.network.SongApiService
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,24 +30,19 @@ class PlayerManager @Inject constructor(
     val playerState: StateFlow<PlayerState> = _playerState.asStateFlow()
 
     private var progressJob: Job? = null
-    suspend fun getSongUrlAndPlay(id: String) {
-        if (isCurrentSong(id)) {
-            Log.d(TAG, "当前歌曲已播放")
-            return
-        }
-
-        try {
-            val url = withContext(Dispatchers.IO) {
-                songApiService.getSongUrl(id, "standard").data[0].url
-            }
-            play(url, id)
-        } catch (e: Exception) {
-            Log.e(TAG, "播放失败：${e.message}")
-        }
-    }
+    private var changeSong: Boolean = false
 
     fun updateSongList(songList: List<Song>) {
         _playerState.value = _playerState.value.copy(songList = songList)
+    }
+
+    fun updateCurrentSong(song: Song) {
+        if (_playerState.value.currentSong == song) {
+            changeSong = false
+            return
+        }
+        changeSong = true
+        _playerState.value = _playerState.value.copy(currentSong = song)
     }
 
     fun playOrStart() {
@@ -61,66 +54,81 @@ class PlayerManager @Inject constructor(
 
     fun isPlaying() = _playerState.value.isPlaying
 
-    fun isCurrentSong(id: String) = _playerState.value.id == id
 
-    private fun stopNow() {
+    private fun readyForNext() {
         mediaPlayer?.apply {
-            setOnPreparedListener(null)
-            setOnCompletionListener(null)
-            setOnErrorListener(null)
-
-            if (isPlaying) {
-                stop()
-            }
-            release()
+            progressJob?.cancel()
+            progressJob = null
+            reset()
         }
-        progressJob?.cancel()
-        progressJob = null
-        mediaPlayer = null
-        _playerState.value = _playerState.value.copy(
-            id = "",
-            url = "",
-            isPlaying = false,
-        )
+
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun play(url: String, id: String) {
-        mediaPlayer = MediaPlayer().apply {
-            setDataSource(url)
-            prepareAsync()
-            setOnPreparedListener {
-                it.start()
-                _playerState.value = _playerState.value.copy(
-                    id = id,
-                    url = url,
-                    isPlaying = true,
-                    duration = it.duration.toLong()
-                )
-                progressJob?.cancel()
-                progressJob = GlobalScope.launch {
-                    withContext(Dispatchers.Default) {
-                        while (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-                            val currentPosition = mediaPlayer?.currentPosition ?: 0
+    suspend fun play() {
+        val song = _playerState.value.currentSong
+        Log.d(TAG, "$song")
+        val url: String = songApiService.getSongUrl(song.id, "standard").data[0].url
 
-                            val duration = mediaPlayer?.duration ?: 1
 
-                            _playerState.value = _playerState.value.copy(
-                                progress = currentPosition.toFloat() / duration,
-                                current = currentPosition.toLong(),
-                            )
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer().apply {
+                setDataSource(url)
+                prepareAsync()
+                setOnPreparedListener {
+                    it.start()
+                    _playerState.value = _playerState.value.copy(
+                        url = url,
+                        isPlaying = true,
+                        duration = it.duration.toLong()
+                    )
+                    progressJob?.cancel()
+                    progressJob = GlobalScope.launch {
+                        withContext(Dispatchers.Default) {
+                            while (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+                                val currentPosition = mediaPlayer?.currentPosition ?: 0
 
-                            delay(1000L)
+                                val duration = mediaPlayer?.duration ?: 1
+
+                                _playerState.value = _playerState.value.copy(
+                                    progress = currentPosition.toFloat() / duration,
+                                    current = currentPosition.toLong(),
+                                )
+
+                                delay(1000L)
+                            }
                         }
                     }
                 }
+
+                setOnCompletionListener {
+                    readyForNext()
+                    playNext()
+                }
+            }
+        } else {
+            if (changeSong) {
+                mediaPlayer?.reset()
+                mediaPlayer?.setDataSource(url)
+                mediaPlayer?.prepareAsync()
             }
 
-            setOnCompletionListener {
-                stopNow()
-            }
         }
 
+    }
+
+    private fun playNext() {
+
+    }
+
+    private fun getNextSong() {
+        val state = _playerState.value
+        val index = state.songList.indexOfFirst { it.id == state.currentSong.id }
+        var nextIndex: Int
+        when (state.playMode) {
+            PlayMode.Random.code -> {
+            }
+        }
     }
 
     fun jump(position: Float) {
@@ -131,7 +139,6 @@ class PlayerManager @Inject constructor(
 }
 
 data class PlayerState(
-    val id: String = "",
     val url: String = "",
     val isPlaying: Boolean = false,
     val duration: Long = 0L,
@@ -140,8 +147,10 @@ data class PlayerState(
     val playMode: Int = PlayMode.Order.code,
     val nextSongId: String = "",
 
-    val songList: List<Song> = emptyList()
-)
+    val currentSong: Song = Song(),
+    val songList: List<Song> = emptyList(),
+
+    )
 
 enum class PlayMode(val code: Int, val desc: String) {
     Random(1, "random"),

@@ -72,17 +72,15 @@ fun PlayerScreen(
 ) {
     val navController = LocalNavController.current
 
-    val song = navController.previousBackStackEntry?.savedStateHandle?.get<Song>("song")
 
     val playerState = viewModel.playerState.collectAsState().value
-    if (song != null) {
-        // 请求播放链接
-        LaunchedEffect(song.id) {
-            viewModel.getUrlAndPlay(song.id)
-        }
-    } else {
-        return
+
+    val song = playerState.currentSong
+    // 请求播放链接
+    LaunchedEffect(true) {
+        viewModel.play()
     }
+
     Scaffold(
         topBar = {
             TopAppBar(

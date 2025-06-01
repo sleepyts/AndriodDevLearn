@@ -10,18 +10,18 @@ data class PlaylistTrackResp(
 
 @Parcelize
 data class Song(
-    val name: String,
+    val name: String = "",
 
-    val mainTitle: String,
+    val mainTitle: String = "",
 
     // Artists
-    val ar: List<Ar>,
+    val ar: List<Ar> = emptyList(),
     // Albums
-    val al: Al,
+    val al: Al = Al(),
 
-    val additionalTitle: String,
+    val additionalTitle: String = "",
 
-    val id: String
+    val id: String = ""
 ) : Parcelable
 
 @Parcelize
@@ -32,7 +32,7 @@ data class Ar(
 
 @Parcelize
 data class Al(
-    val id: String,
-    val name: String,
-    val picUrl: String
+    val id: String = "",
+    val name: String = "",
+    val picUrl: String = ""
 ) : Parcelable
