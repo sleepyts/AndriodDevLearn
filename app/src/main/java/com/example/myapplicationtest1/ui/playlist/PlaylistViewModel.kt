@@ -3,6 +3,7 @@ package com.example.myapplicationtest1.ui.playlist
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplicationtest1.PlayerManager
 import com.example.myapplicationtest1.model.resp.Playlist
 import com.example.myapplicationtest1.model.resp.Song
 import com.example.myapplicationtest1.network.PlaylistApiService
@@ -17,7 +18,8 @@ private const val TAG = "PlaylistViewModel"
 
 @HiltViewModel
 class PlaylistViewModel @Inject constructor(
-    private val playlistApiService: PlaylistApiService
+    private val playlistApiService: PlaylistApiService,
+    private val playerManager: PlayerManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PlaylistUiState())
@@ -31,6 +33,7 @@ class PlaylistViewModel @Inject constructor(
                     playlistApiService.getPlaylistTracks(id)
                 Log.d(TAG, "$playlistTracks")
                 updateSongs(playlistTracks.songs)
+                playerManager.updateSongList(playlistTracks.songs)
             } catch (e: Exception) {
                 Log.e(TAG, "$e")
             }

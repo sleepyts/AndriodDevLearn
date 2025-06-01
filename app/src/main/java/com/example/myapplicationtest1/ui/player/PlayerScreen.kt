@@ -21,7 +21,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material.icons.filled.RepeatOne
+import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -45,6 +50,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
@@ -53,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.myapplicationtest1.PlayMode
 import com.example.myapplicationtest1.PlayerManager
 import com.example.myapplicationtest1.model.resp.Song
 import com.example.myapplicationtest1.ui.navigation.LocalNavController
@@ -204,16 +211,31 @@ fun PlayerScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 com.example.myapplicationtest1.ui.componet.IconButton(
+                    onClick = { /*TODO*/ },
+                    imageVector = when (playerState.playMode) {
+                        PlayMode.Order.code -> Icons.Default.Repeat
+                        PlayMode.Random.code -> Icons.Default.Shuffle
+                        PlayMode.Circle.code -> Icons.Default.RepeatOne
+                        else -> Icons.Default.Repeat
+                    },
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                com.example.myapplicationtest1.ui.componet.IconButton(
                     onClick = { viewModel.playBeforeSong() },
                     imageVector = Icons.Default.ArrowBack,
                 )
                 com.example.myapplicationtest1.ui.componet.IconButton(
                     onClick = { viewModel.pauseOrStart() },
-                    imageVector = Icons.Default.PlayArrow,
+                    imageVector = if (playerState.isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                 )
                 com.example.myapplicationtest1.ui.componet.IconButton(
                     onClick = { viewModel.playNextSong() },
                     imageVector = Icons.Default.ArrowForward,
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                com.example.myapplicationtest1.ui.componet.IconButton(
+                    onClick = { /*TODO*/ },
+                    imageVector = Icons.Default.Menu,
                 )
             }
         }

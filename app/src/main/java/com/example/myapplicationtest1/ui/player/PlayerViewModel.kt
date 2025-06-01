@@ -53,7 +53,7 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun pauseOrStart() {
-
+        playerManager.playOrStart()
     }
 
 

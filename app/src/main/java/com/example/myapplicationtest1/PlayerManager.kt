@@ -48,9 +48,22 @@ class PlayerManager @Inject constructor(
         }
     }
 
+    fun updateSongList(songList: List<Song>) {
+        _playerState.value = _playerState.value.copy(songList = songList)
+    }
+
+    fun playOrStart() {
+        mediaPlayer?.let {
+            if (it.isPlaying) it.pause() else it.start()
+            _playerState.value = _playerState.value.copy(isPlaying = !_playerState.value.isPlaying)
+        }
+    }
+
+    fun isPlaying() = _playerState.value.isPlaying
+
     fun isCurrentSong(id: String) = _playerState.value.id == id
 
-    private fun stop() {
+    private fun stopNow() {
         mediaPlayer?.apply {
             setOnPreparedListener(null)
             setOnCompletionListener(null)
@@ -64,19 +77,21 @@ class PlayerManager @Inject constructor(
         progressJob?.cancel()
         progressJob = null
         mediaPlayer = null
-        _playerState.value = PlayerState()
+        _playerState.value = _playerState.value.copy(
+            id = "",
+            url = "",
+            isPlaying = false,
+        )
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun play(url: String, id: String) {
-        stop()
-
         mediaPlayer = MediaPlayer().apply {
             setDataSource(url)
             prepareAsync()
             setOnPreparedListener {
                 it.start()
-                _playerState.value = PlayerState(
+                _playerState.value = _playerState.value.copy(
                     id = id,
                     url = url,
                     isPlaying = true,
@@ -102,7 +117,7 @@ class PlayerManager @Inject constructor(
             }
 
             setOnCompletionListener {
-                it.stop()
+                stopNow()
             }
         }
 
@@ -116,11 +131,20 @@ class PlayerManager @Inject constructor(
 }
 
 data class PlayerState(
-    var id: String = "",
-    var url: String = "",
-    var isPlaying: Boolean = false,
-    var duration: Long = 0L,
-    var progress: Float = 0f,
-    var current: Long = 0L
+    val id: String = "",
+    val url: String = "",
+    val isPlaying: Boolean = false,
+    val duration: Long = 0L,
+    val progress: Float = 0f,
+    val current: Long = 0L,
+    val playMode: Int = PlayMode.Order.code,
+    val nextSongId: String = "",
 
+    val songList: List<Song> = emptyList()
 )
+
+enum class PlayMode(val code: Int, val desc: String) {
+    Random(1, "random"),
+    Circle(2, "circle"),
+    Order(3, "order")
+}

@@ -66,7 +66,7 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.1.0")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.0") // 注意不要有空格和 - 写法错误！
     implementation ("com.google.android.exoplayer:exoplayer:2.19.0")
-
+    implementation("androidx.compose.material:material-icons-extended:1.2.1")
     // 测试
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
