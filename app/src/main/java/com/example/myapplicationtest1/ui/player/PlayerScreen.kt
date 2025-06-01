@@ -76,10 +76,6 @@ fun PlayerScreen(
     val playerState = viewModel.playerState.collectAsState().value
 
     val song = playerState.currentSong
-    // 请求播放链接
-    LaunchedEffect(true) {
-        viewModel.play()
-    }
 
     Scaffold(
         topBar = {

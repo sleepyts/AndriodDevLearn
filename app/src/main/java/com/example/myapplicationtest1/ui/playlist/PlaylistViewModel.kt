@@ -50,6 +50,13 @@ class PlaylistViewModel @Inject constructor(
         playerManager.updateCurrentSong(song)
     }
 
+    fun play() {
+        viewModelScope.launch {
+            playerManager.play()
+
+        }
+    }
+
 
 }
 
