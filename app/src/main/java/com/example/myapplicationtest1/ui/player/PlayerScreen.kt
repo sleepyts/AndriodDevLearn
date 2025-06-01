@@ -209,7 +209,7 @@ fun PlayerScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 com.example.myapplicationtest1.ui.componet.IconButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { viewModel.changePlayMode() },
                     imageVector = when (playerState.playMode) {
                         PlayMode.Order.code -> Icons.Default.Repeat
                         PlayMode.Random.code -> Icons.Default.Shuffle

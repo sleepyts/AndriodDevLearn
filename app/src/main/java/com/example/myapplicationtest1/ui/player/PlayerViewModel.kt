@@ -57,6 +57,10 @@ class PlayerViewModel @Inject constructor(
         playerManager.playOrStart()
     }
 
+    fun changePlayMode() {
+        playerManager.changePlayMode()
+    }
+
 
     private fun formatDuration(durationMs: Long): String {
         val totalSeconds = durationMs / 1000

@@ -137,8 +137,12 @@ class PlayerManager @Inject constructor(
         getUrlAndPlay()
     }
 
+    fun changePlayMode() {
+        _playerState.value =
+            _playerState.value.copy(playMode = PlayMode.getNextMode(_playerState.value.playMode))
+    }
 
-    private fun getUrlAndPlay() {
+    fun getUrlAndPlay() {
 
         var url = ""
         scope.launch {
@@ -160,7 +164,7 @@ class PlayerManager @Inject constructor(
             PlayMode.Random.code -> {
                 do {
                     nextSong = state.songList.random()
-                } while (nextSong != state.currentSong)
+                } while (nextSong == state.currentSong)
             }
 
             PlayMode.Order.code -> {
@@ -207,5 +211,14 @@ data class PlayerState(
 enum class PlayMode(val code: Int, val desc: String) {
     Random(1, "random"),
     Circle(2, "circle"),
-    Order(3, "order")
+    Order(3, "order");
+
+    companion object {
+        fun getNextMode(ordinal: Int): Int {
+            val modes = PlayMode.entries.toTypedArray()
+            val nextOrdinal = (ordinal + 1) % modes.size
+            return modes[nextOrdinal].code
+        }
+    }
+
 }
