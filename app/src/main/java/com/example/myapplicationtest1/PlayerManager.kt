@@ -169,8 +169,8 @@ class PlayerManager @Inject constructor(
 
             PlayMode.Order.code -> {
                 if (isNext) nextSongIndex++ else nextSongIndex--
-                if (nextSongIndex >= state.songList.size) nextSongIndex = 0;
-                if (nextSongIndex <= 0) nextSongIndex = state.songList.size - 1;
+                if (nextSongIndex >= state.songList.size-1) nextSongIndex = 0;
+                if (nextSongIndex < 0) nextSongIndex = state.songList.size - 1;
                 nextSong = state.songList[nextSongIndex]
             }
 
@@ -179,6 +179,8 @@ class PlayerManager @Inject constructor(
             }
 
         }
+        Log.d(TAG,"$nextSongIndex")
+        Log.d(TAG,"${state.songList.size}")
 
         _playerState.value = _playerState.value.copy(
             currentSong = nextSong,

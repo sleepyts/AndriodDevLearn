@@ -32,7 +32,7 @@ object NetWorkModule {
     fun provideBaseRetrofit(): Retrofit {
 
         return Retrofit.Builder()
-            .baseUrl("http://b000-2001-da8-3001-1020-0-70cb-95d3-3e38.ngrok-free.app")
+            .baseUrl("http://10.0.2.2:3000")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
