@@ -147,6 +147,7 @@ fun SongItem(
             .height(50.dp)
             .clickable(onClick = {
                 viewModel.updateCurrentSong(song)
+                viewModel.updateSongList(viewModel.uiState.value.songs)
                 viewModel.play()
                 navController.navigate(Routes.PLAYER)
             }),

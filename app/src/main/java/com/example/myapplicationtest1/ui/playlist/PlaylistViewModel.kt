@@ -33,7 +33,6 @@ class PlaylistViewModel @Inject constructor(
                     playlistApiService.getPlaylistTracks(id)
                 Log.d(TAG, "$playlistTracks")
                 updateSongs(playlistTracks.songs)
-                playerManager.updateSongList(playlistTracks.songs)
             } catch (e: Exception) {
                 Log.e(TAG, "$e")
             }
@@ -41,6 +40,10 @@ class PlaylistViewModel @Inject constructor(
 
     }
 
+
+    fun updateSongList(songs: List<Song>) {
+        playerManager.updateSongList(songs)
+    }
 
     fun updateSongs(songs: List<Song>) {
         _uiState.value = _uiState.value.copy(songs = songs)
