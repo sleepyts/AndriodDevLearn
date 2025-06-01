@@ -44,6 +44,19 @@ class PlayerViewModel @Inject constructor(
         return Pair(formatDuration(current), formatDuration(duration))
     }
 
+    fun playNextSong() {
+
+    }
+
+    fun playBeforeSong() {
+
+    }
+
+    fun pauseOrStart() {
+
+    }
+
+
     private fun formatDuration(durationMs: Long): String {
         val totalSeconds = durationMs / 1000
         val minutes = totalSeconds / 60

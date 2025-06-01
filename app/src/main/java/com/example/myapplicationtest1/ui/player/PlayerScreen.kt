@@ -1,6 +1,7 @@
 package com.example.myapplicationtest1.ui.player
 
 import android.R.attr.contentDescription
+import android.R.attr.onClick
 import android.R.attr.thumb
 import android.view.RoundedCorner
 import androidx.compose.foundation.Canvas
@@ -19,6 +20,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -171,7 +174,7 @@ fun PlayerScreen(
                             color = activeTrackColor,
                             start = Offset(0f, centerY),
                             end = Offset(
-                                (size.width * playerState.progress -  thumbRadius),
+                                (size.width * playerState.progress - thumbRadius),
                                 centerY
                             ),
                             strokeWidth = strokeWidth,
@@ -187,12 +190,30 @@ fun PlayerScreen(
                 val songTrack = viewModel.getSongTrack()
                 Text(
                     text = songTrack.first,
-                    style = MaterialTheme .typography.labelSmall
+                    style = MaterialTheme.typography.labelSmall
                 )
                 Text(
                     text = songTrack.second,
-                    style = MaterialTheme .typography.labelSmall
+                    style = MaterialTheme.typography.labelSmall
 
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                com.example.myapplicationtest1.ui.componet.IconButton(
+                    onClick = { viewModel.playBeforeSong() },
+                    imageVector = Icons.Default.ArrowBack,
+                )
+                com.example.myapplicationtest1.ui.componet.IconButton(
+                    onClick = { viewModel.pauseOrStart() },
+                    imageVector = Icons.Default.PlayArrow,
+                )
+                com.example.myapplicationtest1.ui.componet.IconButton(
+                    onClick = { viewModel.playNextSong() },
+                    imageVector = Icons.Default.ArrowForward,
                 )
             }
         }
