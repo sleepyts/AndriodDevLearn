@@ -46,11 +46,11 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun playNextSong() {
-
+        playerManager.playNext()
     }
 
     fun playBeforeSong() {
-
+        playerManager.playBefore()
     }
 
     fun pauseOrStart() {

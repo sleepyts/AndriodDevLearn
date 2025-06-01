@@ -4,6 +4,7 @@ import android.media.MediaPlayer
 import android.util.Log
 import com.example.myapplicationtest1.model.resp.Song
 import com.example.myapplicationtest1.network.SongApiService
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -32,6 +33,9 @@ class PlayerManager @Inject constructor(
     private var progressJob: Job? = null
     private var changeSong: Boolean = false
 
+
+    private val scope = CoroutineScope(Dispatchers.IO)
+
     fun updateSongList(songList: List<Song>) {
         _playerState.value = _playerState.value.copy(songList = songList)
     }
@@ -42,7 +46,10 @@ class PlayerManager @Inject constructor(
             return
         }
         changeSong = true
-        _playerState.value = _playerState.value.copy(currentSong = song)
+        _playerState.value = _playerState.value.copy(
+            currentSong = song,
+            currentSongIndex = _playerState.value.songList.indexOf(song)
+        )
     }
 
     fun playOrStart() {
@@ -102,7 +109,6 @@ class PlayerManager @Inject constructor(
                 }
 
                 setOnCompletionListener {
-                    readyForNext()
                     playNext()
                 }
             }
@@ -117,18 +123,63 @@ class PlayerManager @Inject constructor(
 
     }
 
-    private fun playNext() {
+    fun playNext() {
+        readyForNext()
+        getNextSong()
 
+        getUrlAndPlay()
     }
 
-    private fun getNextSong() {
+    fun playBefore() {
+        readyForNext()
+        getNextSong(false)
+
+        getUrlAndPlay()
+    }
+
+
+    private fun getUrlAndPlay() {
+
+        var url = ""
+        scope.launch {
+            url = songApiService.getSongUrl(
+                _playerState.value.currentSong.id,
+                "standard"
+            ).data[0].url
+            mediaPlayer?.reset()
+            mediaPlayer?.setDataSource(url)
+            mediaPlayer?.prepareAsync()
+        }
+    }
+
+    private fun getNextSong(isNext: Boolean = true) {
         val state = _playerState.value
-        val index = state.songList.indexOfFirst { it.id == state.currentSong.id }
-        var nextIndex: Int
+        var nextSong: Song = Song()
+        var nextSongIndex: Int = state.currentSongIndex
         when (state.playMode) {
             PlayMode.Random.code -> {
+                do {
+                    nextSong = state.songList.random()
+                } while (nextSong != state.currentSong)
             }
+
+            PlayMode.Order.code -> {
+                if (isNext) nextSongIndex++ else nextSongIndex--
+                if (nextSongIndex >= state.songList.size) nextSongIndex = 0;
+                if (nextSongIndex <= 0) nextSongIndex = state.songList.size - 1;
+                nextSong = state.songList[nextSongIndex]
+            }
+
+            PlayMode.Circle.code -> {
+
+            }
+
         }
+
+        _playerState.value = _playerState.value.copy(
+            currentSong = nextSong,
+            currentSongIndex = nextSongIndex
+        )
     }
 
     fun jump(position: Float) {
@@ -148,6 +199,7 @@ data class PlayerState(
     val nextSongId: String = "",
 
     val currentSong: Song = Song(),
+    val currentSongIndex: Int = 0,
     val songList: List<Song> = emptyList(),
 
     )
