@@ -4,6 +4,7 @@ import android.media.MediaPlayer
 import android.util.Log
 import com.example.myapplicationtest1.model.resp.Song
 import com.example.myapplicationtest1.network.SongApiService
+import com.example.myapplicationtest1.service.PlayerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -123,18 +124,24 @@ class PlayerManager @Inject constructor(
 
     }
 
-    fun playNext() {
+    fun playNext(
+        onSongChanged: (() -> Unit) = {}
+    ) {
         readyForNext()
         getNextSong()
 
         getUrlAndPlay()
+        onSongChanged()
     }
 
-    fun playBefore() {
+    fun playBefore(
+        onSongChanged: (() -> Unit) = {}
+    ) {
         readyForNext()
         getNextSong(false)
 
         getUrlAndPlay()
+        onSongChanged()
     }
 
     fun changePlayMode() {
@@ -169,7 +176,7 @@ class PlayerManager @Inject constructor(
 
             PlayMode.Order.code -> {
                 if (isNext) nextSongIndex++ else nextSongIndex--
-                if (nextSongIndex >= state.songList.size-1) nextSongIndex = 0;
+                if (nextSongIndex >= state.songList.size - 1) nextSongIndex = 0;
                 if (nextSongIndex < 0) nextSongIndex = state.songList.size - 1;
                 nextSong = state.songList[nextSongIndex]
             }
@@ -179,8 +186,8 @@ class PlayerManager @Inject constructor(
             }
 
         }
-        Log.d(TAG,"$nextSongIndex")
-        Log.d(TAG,"${state.songList.size}")
+        Log.d(TAG, "$nextSongIndex")
+        Log.d(TAG, "${state.songList.size}")
 
         _playerState.value = _playerState.value.copy(
             currentSong = nextSong,
@@ -206,9 +213,9 @@ data class PlayerState(
 
     val currentSong: Song = Song(),
     val currentSongIndex: Int = 0,
-    val songList: List<Song> = emptyList(),
+    val songList: List<Song> = emptyList()
 
-    )
+)
 
 enum class PlayMode(val code: Int, val desc: String) {
     Random(1, "random"),

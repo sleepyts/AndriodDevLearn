@@ -1,5 +1,6 @@
 package com.example.myapplicationtest1.ui.playlist
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,9 +30,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -39,6 +42,7 @@ import com.example.myapplicationtest1.model.resp.Al
 import com.example.myapplicationtest1.model.resp.Ar
 import com.example.myapplicationtest1.model.resp.Playlist
 import com.example.myapplicationtest1.model.resp.Song
+import com.example.myapplicationtest1.service.PlayerService
 import com.example.myapplicationtest1.ui.navigation.LocalNavController
 import com.example.myapplicationtest1.ui.navigation.Routes
 
@@ -141,6 +145,7 @@ fun SongItem(
     viewModel: PlaylistViewModel = hiltViewModel(),
 ) {
     val navController = LocalNavController.current
+    val context = LocalContext.current // <-- 这里拿Context
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -149,6 +154,8 @@ fun SongItem(
                 viewModel.updateSongList(viewModel.uiState.value.songs)
                 viewModel.updateCurrentSong(song)
                 viewModel.play()
+                val intent = Intent(context, PlayerService::class.java)
+                ContextCompat.startForegroundService(context, intent)
                 navController.navigate(Routes.PLAYER)
             }),
         horizontalArrangement = Arrangement.Start,
